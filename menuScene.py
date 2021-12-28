@@ -13,10 +13,7 @@ def menuScene(events, screen, state, globals):
     if not state: # initializes the state if it is empty
         state["backgroundFrame"] = 0
         state["framesToNewBackground"] = 1
-    
-    for event in events:
-        if event.type == pygame.QUIT:
-            return False
+
 
     updateBackground(screen, state)
 
