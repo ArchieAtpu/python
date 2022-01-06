@@ -1,13 +1,6 @@
 import pygame 
 
-pygame.init()
-
-width = 1024
-height = 768
-screen = pygame.display.set_mode((width, height))
-
-background = pygame.image.load('background_title.png')
-
+background = pygame.image.load('./assets/titleBackground.png')
 
 def titleScene(events, screen, state, globals):
   for event in events:
@@ -19,5 +12,4 @@ def titleScene(events, screen, state, globals):
         return 'menu'
 
   screen.blit(background, (0,0))
-  print(pygame.mouse.get_pos())
 
