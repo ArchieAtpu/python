@@ -13,11 +13,9 @@ def startGame(scenes, startingScene, screenSize):
     pygame.init()   
     screen = pygame.display.set_mode(screenSize)
     clock = pygame.time.Clock()
-
-    running = True
     
     # Game Loop: Calls the current scene's subprogram each iteration and stores the 'state' between calls.
-    while running:
+    while True:
         screen.fill((0,0,0)) # Clears the screen
 
         events = pygame.event.get()
@@ -25,7 +23,7 @@ def startGame(scenes, startingScene, screenSize):
 
         if updateResult is not None:
             if not updateResult: # If False is returned, stop the program.
-                running = False
+                break
             else: # Switches to the scene that was returned.
                 assert updateResult in scenes, f"The scene '{updateResult}' was not found." # Ensures that the scene exists.
                 currentScene = scenes[updateResult]

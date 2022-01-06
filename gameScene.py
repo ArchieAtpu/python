@@ -41,7 +41,7 @@ def initializeState(state):
 def handleEvents(events, state):
     for event in events:
         if event.type == pygame.QUIT:
-            return False # exits the program
+            return None # exits the program
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:

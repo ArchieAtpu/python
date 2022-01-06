@@ -3,13 +3,16 @@ import pygame
 background = pygame.image.load('./assets/titleBackground.png')
 
 def titleScene(events, screen, state, globals):
-  for event in events:
-    if event.type == pygame.QUIT:
-      return False
-    if event.type == pygame.MOUSEBUTTONUP:
-      pos = pygame.mouse.get_pos()
-      if pos[0] > 231 and pos[0] < 676 and pos[1] < 741 and pos[1] > 676:
-        return 'menu'
+    for event in events:
+        if event.type == pygame.QUIT:
+            return False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mousePos = pygame.mouse.get_pos()
 
-  screen.blit(background, (0,0))
+            if mousePos[0] > 231 and mousePos[0] < 425 and mousePos[1] > 676 and mousePos[1] < 741:
+                return False
+            if mousePos[0] > 650 and mousePos[0] < 850 and mousePos[1] > 675 and mousePos[1] < 745:
+                return "menu"
+
+    screen.blit(background, (0,0))
 
