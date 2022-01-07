@@ -15,11 +15,15 @@ def menuScene(events, screen, state, globals):
             return False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mousePos = pygame.mouse.get_pos()
+            print(mousePos)
 
             if mousePos[0] > 565 and mousePos[0] < 885 and mousePos[1] > 385 and mousePos[1] < 495:
                 return False
-            if mousePos[0] > 135 and mousePos[0] < 455 and mousePos[1] > 385 and mousePos[1] < 495:
+            elif mousePos[0] > 135 and mousePos[0] < 455 and mousePos[1] > 385 and mousePos[1] < 495:
                 return "game"
+            elif mousePos[0] > 385 and mousePos[0] < 645 and mousePos[1] > 525 and mousePos[1] < 615:
+                return "testStart"
+
 
             # the other buttons do not work yet
 

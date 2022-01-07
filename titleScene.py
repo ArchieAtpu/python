@@ -11,7 +11,7 @@ def titleScene(events, screen, state, globals):
 
             if mousePos[0] > 231 and mousePos[0] < 425 and mousePos[1] > 676 and mousePos[1] < 741:
                 return False
-            if mousePos[0] > 650 and mousePos[0] < 850 and mousePos[1] > 675 and mousePos[1] < 745:
+            elif mousePos[0] > 650 and mousePos[0] < 850 and mousePos[1] > 675 and mousePos[1] < 745:
                 return "menu"
 
     screen.blit(background, (0,0))
