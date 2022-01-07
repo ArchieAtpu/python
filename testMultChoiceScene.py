@@ -16,14 +16,19 @@ questions = [
         "bar",
         "foobar",
         "test123"
-    ], "correctAnswer": 0, "image": pygame.image.load("./assets/testBackground.png") },
+    ], "correctAnswer": 0, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "test123 2", "answers": [
         "foo2",
         "bar2",
         "foobar2",
         "test123 2"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") }
+    ], "correctAnswer": 3, "image": pygame.image.load("./assets/demoAsteroid.jpg") }
 ]
+
+# Scale images so that their height is 260 while preserving aspect ratio
+for question in questions:
+    newWidth = round(260/question["image"].get_height()*question["image"].get_width())
+    question["image"] = pygame.transform.scale(question["image"], (newWidth, 260))
 
 radioButtonSize = 20
 radioButtonXCoord = 115
@@ -64,9 +69,8 @@ def testMultChoiceScene(events, screen, state, globals):
             state["userAnswers"][state["currentQuestion"]] == i, (190,190,190), (255,255,255))
 
     questionImg = questions[state["currentQuestion"]]["image"]
-    newWidth = round(260/questionImg.get_height()*questionImg.get_width())
-    scaledImg = pygame.transform.scale(questionImg, (newWidth, 260))
-    screen.blit(scaledImg, (512 - newWidth/2, 240 - 125))
+    position = (512 - questionImg.get_width()/2, 240 - 125) # center image around (512,240)
+    screen.blit(questionImg, position)
 
 def radioButton(screen, radius, pos, selected, unselectedColor, selectedColor):
     pygame.draw.circle(screen, selectedColor if selected else unselectedColor, pos, radius, radius//7)
