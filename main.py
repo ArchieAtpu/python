@@ -20,4 +20,4 @@ startGame({
     "game": gameScene,
     "testStart": testStartScene,
     "testMultChoice": testMultChoiceScene
-}, "testMultChoice", (1024, 768))
+}, "title", (1024, 768))

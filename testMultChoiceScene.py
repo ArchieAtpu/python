@@ -51,12 +51,16 @@ def testMultChoiceScene(events, screen, state, globals):
                     state["userAnswers"][state["currentQuestion"]] = i
                     break
 
-            if mousePos[0] > 215 and mousePos[0] < 445 and mousePos[1] > 640 and mousePos[1] < 725:
+            if state["currentQuestion"] != 0 and \
+                mousePos[0] > 215 and mousePos[0] < 445 and mousePos[1] > 640 and mousePos[1] < 725:
                 state["currentQuestion"] -= 1
             elif mousePos[0] > 595 and mousePos[0] < 825 and mousePos[1] > 640 and mousePos[1] < 725:
                 state["currentQuestion"] += 1
     
     screen.blit(background, (0,0))
+
+    if state["currentQuestion"] == 0:
+        screen.fill((0,0,0), pygame.Rect(215,640,235,85))
 
     bangersFont.render_to(screen, (70, 40), questions[state["currentQuestion"]]["question"], WHITE, size=72)
     bangersFont.render_to(screen, (150, 390), questions[state["currentQuestion"]]["answers"][0], PURPLE, size=52)
