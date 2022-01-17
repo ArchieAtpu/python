@@ -4,6 +4,7 @@ from startGame import startGame
 from titleScene import titleScene
 from menuScene import menuScene
 from gameScene import gameScene
+from creditScene import creditScene
 from testStartScene import testStartScene
 from lessonScene import lessonScene
 from testMultChoiceScene import testMultChoiceScene
@@ -21,5 +22,6 @@ startGame({
     "game": gameScene,
     "testStart": testStartScene,
     "testMultChoice": testMultChoiceScene,
-    "lesson": lessonScene
+    "lesson": lessonScene,
+    "credits": creditScene
 }, "testMultChoice", (1024, 768))
