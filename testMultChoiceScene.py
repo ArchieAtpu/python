@@ -37,13 +37,18 @@ radioButtonXCoord = 115
 radioButtonYCoords = [ 410, 470, 530, 590 ]
 
 def testMultChoiceScene(events, screen, state, globals):
+    # initialize variables if they don't exist
     if not "userAnswers" in globals:
         globals["userAnswers"] = [ 0 for i in range(len(questions)) ]
     if not "showTestAnswers" in globals:
-        globals["showTestAnswers"] = True#False
-
+        globals["showTestAnswers"] = False
     if not state:
         state["currentQuestion"] = 0
+
+    # if back button on matching screen was pressed
+    if globals.get("fromMatching", False):
+        globals["fromMatching"] = False
+        state["currentQuestion"] = len(questions) - 1
 
     for event in events:
         if event.type == pygame.QUIT:
