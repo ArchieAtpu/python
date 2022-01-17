@@ -1,6 +1,6 @@
 import pygame 
 
-background = pygame.image.load('./assets/lessonBackground.png')
+background = pygame.image.load('./assets/lessonsBackground/lessonBackground.png')
 
 def lessonScene(events, screen, state, globals):
   for event in events:
@@ -9,8 +9,25 @@ def lessonScene(events, screen, state, globals):
         elif event.type == pygame.MOUSEBUTTONDOWN:
           mousePos = pygame.mouse.get_pos()
           
-          if event.type == pygame.MOUSEBUTTONUP:
-            if mousePos[0] > 231 and mousePos[0] < 676 and mousePos[1] < 741 and mousePos[1] > 676:
-              return 'lesson'
+          if mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 269 and mousePos[1] < 308:
+            return 'Sun'
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 327 and mousePos[1] < 358:
+            return 'Inner/Outer Planets'  
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 373 and mousePos[1] < 405:
+            return 'Mercury/Venus'   
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 421 and mousePos[1] < 453:
+            return 'Earth/Mars'     
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 471 and mousePos[1] < 500:
+            return 'Jupiter/Saturn'    
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 523 and mousePos[1] < 552:
+            return 'Uranus/Neptune'
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 575 and mousePos[1] < 601:
+            return 'Dwarf Planets'
+          elif mousePos[0] > 330 and mousePos[0] < 742 and mousePos[1] > 619 and mousePos[1] < 649:
+            return 'Dwarf Planets2'
+    
+            
   screen.blit(background, (0,0))
-  print(pygame.mouse.get_pos())
+
+
+

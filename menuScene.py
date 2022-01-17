@@ -23,7 +23,10 @@ def menuScene(events, screen, state, globals):
                 return "game"
             elif mousePos[0] > 385 and mousePos[0] < 645 and mousePos[1] > 525 and mousePos[1] < 615:
                 return "testStart"
-
+            elif mousePos[0] > 60 and mousePos[0] < 302 and mousePos[1] > 557 and mousePos[1] < 657:
+              return 'lesson'
+            elif mousePos[0] > 388 and mousePos[0] < 640 and mousePos[1] > 657 and mousePos[1] < 743:
+                return "credits"
 
             # the other buttons do not work yet
 
