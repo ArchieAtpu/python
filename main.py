@@ -5,6 +5,7 @@ from titleScene import titleScene
 from menuScene import menuScene
 from gameScene import gameScene
 from testStartScene import testStartScene
+from lessonScene import lessonScene
 from testMultChoiceScene import testMultChoiceScene
 
 # This code is necessary for python to work on tdsb computers
@@ -19,5 +20,6 @@ startGame({
     "menu": menuScene,
     "game": gameScene,
     "testStart": testStartScene,
-    "testMultChoice": testMultChoiceScene
+    "testMultChoice": testMultChoiceScene,
+    "lesson": lessonScene
 }, "testMultChoice", (1024, 768))
