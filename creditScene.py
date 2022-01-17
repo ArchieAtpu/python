@@ -1,6 +1,6 @@
 import pygame 
 
-background = pygame.image.load('./assets/creditsBackground.png')
+background = pygame.image.load('./assets/creditBackground.png')
 
 def creditsScene(events, screen, state, globals):
     for event in events:
