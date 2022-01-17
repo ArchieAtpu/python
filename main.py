@@ -4,7 +4,9 @@ from startGame import startGame
 from titleScene import titleScene
 from menuScene import menuScene
 from gameScene import gameScene
+from creditScene import creditScene
 from testStartScene import testStartScene
+from lessonScene import lessonScene
 from testMultChoiceScene import testMultChoiceScene
 from testMatchingScene import testMatchingScene
 from testSubmissionScene import testSubmissionScene
@@ -23,5 +25,7 @@ startGame({
     "testStart": testStartScene,
     "testMultChoice": testMultChoiceScene,
     "testMatching": testMatchingScene,
-    "testSubmission": testSubmissionScene
-}, "testMatching", (1024, 768))
+    "testSubmission": testSubmissionScene,
+    "lesson": lessonScene,
+    "credits": creditScene
+}, "title", (1024, 768))
