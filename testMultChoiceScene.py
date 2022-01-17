@@ -5,6 +5,8 @@ import math
 pygame.freetype.init()
 bangersFont = pygame.freetype.Font("./assets/Bangers-Regular.ttf")
 background = pygame.image.load("./assets/testBackground.png")
+checkMark = pygame.transform.scale(pygame.image.load("./assets/checkmark.png"),(50,40))
+xMark = pygame.transform.scale(pygame.image.load("./assets/xMark.png"),(43,50))
 
 WHITE = (255,255,255)
 PURPLE = (116,67,189)
@@ -35,9 +37,13 @@ radioButtonXCoord = 115
 radioButtonYCoords = [ 410, 470, 530, 590 ]
 
 def testMultChoiceScene(events, screen, state, globals):
+    if not "userAnswers" in globals:
+        globals["userAnswers"] = [ 0 for i in range(len(questions)) ]
+    if not "showTestAnswers" in globals:
+        globals["showTestAnswers"] = True#False
+
     if not state:
         state["currentQuestion"] = 0
-        state["userAnswers"] = [ 0 for i in range(len(questions)) ]
 
     for event in events:
         if event.type == pygame.QUIT:
@@ -46,38 +52,63 @@ def testMultChoiceScene(events, screen, state, globals):
             mousePos = pygame.mouse.get_pos()
             print(mousePos)
 
-            for i in range(4):
-                if math.hypot(mousePos[0] - radioButtonXCoord, mousePos[1] - radioButtonYCoords[i]) <= radioButtonSize:
-                    state["userAnswers"][state["currentQuestion"]] = i
-                    break
+            # code for the radio buttons
+            if not globals["showTestAnswers"]: 
+                for i in range(4):
+                    if math.hypot(mousePos[0] - radioButtonXCoord, mousePos[1] - radioButtonYCoords[i]) <= radioButtonSize:
+                        globals["userAnswers"][state["currentQuestion"]] = i
+                        break
+            
+            # back button
+            if mousePos[0] > 215 and mousePos[0] < 445 and mousePos[1] > 640 and mousePos[1] < 725:
+                if state["currentQuestion"] != 0: 
+                    state["currentQuestion"] -= 1
+                elif globals["showTestAnswers"]:
+                    return "menu"
 
-            if state["currentQuestion"] != 0 and \
-                mousePos[0] > 215 and mousePos[0] < 445 and mousePos[1] > 640 and mousePos[1] < 725:
-                state["currentQuestion"] -= 1
+            # next button
             elif mousePos[0] > 595 and mousePos[0] < 825 and mousePos[1] > 640 and mousePos[1] < 725:
+                if state["currentQuestion"] == len(questions) - 1:
+                    return "testMatching"
                 state["currentQuestion"] += 1
     
     screen.blit(background, (0,0))
 
-    if state["currentQuestion"] == 0:
+    # covers the back button
+    if state["currentQuestion"] == 0 and not globals["showTestAnswers"]:
         screen.fill((0,0,0), pygame.Rect(215,640,235,85))
 
+    renderText(screen, state)
+    drawButtons(screen, state, globals)
+    drawImg(screen, state)
+    
+    if globals["showTestAnswers"]:
+        showAnswers(screen, state, globals)
+
+def renderText(screen, state):
     bangersFont.render_to(screen, (70, 40), questions[state["currentQuestion"]]["question"], WHITE, size=72)
     bangersFont.render_to(screen, (150, 390), questions[state["currentQuestion"]]["answers"][0], PURPLE, size=52)
     bangersFont.render_to(screen, (150, 450), questions[state["currentQuestion"]]["answers"][1], CYAN, size=52)
     bangersFont.render_to(screen, (150, 510), questions[state["currentQuestion"]]["answers"][2], PURPLE, size=52)
     bangersFont.render_to(screen, (150, 570), questions[state["currentQuestion"]]["answers"][3], CYAN, size=52)
 
-    for i in range(4):
-        radioButton(screen, radioButtonSize, (radioButtonXCoord, radioButtonYCoords[i]), 
-            state["userAnswers"][state["currentQuestion"]] == i, (190,190,190), (255,255,255))
-
-    questionImg = questions[state["currentQuestion"]]["image"]
-    position = (512 - questionImg.get_width()/2, 240 - 125) # center image around (512,240)
-    screen.blit(questionImg, position)
-
 def radioButton(screen, radius, pos, selected, unselectedColor, selectedColor):
     pygame.draw.circle(screen, selectedColor if selected else unselectedColor, pos, radius, radius//7)
 
     if selected:
         pygame.draw.circle(screen, selectedColor, pos, radius//2)
+
+def drawButtons(screen, state, globals):
+    for i in range(4):
+        radioButton(screen, radioButtonSize, (radioButtonXCoord, radioButtonYCoords[i]), 
+            globals["userAnswers"][state["currentQuestion"]] == i, (190,190,190), (255,255,255))
+
+def drawImg(screen, state):
+    questionImg = questions[state["currentQuestion"]]["image"]
+    position = (512 - questionImg.get_width()/2, 240 - 125) # center image around (512,240)
+    screen.blit(questionImg, position)
+
+def showAnswers(screen, state, globals):
+    screen.blit(checkMark, (radioButtonXCoord - 70, radioButtonYCoords[questions[state["currentQuestion"]]["correctAnswer"]] - 25))
+    if globals["userAnswers"][state["currentQuestion"]] != questions[state["currentQuestion"]]["correctAnswer"]:
+        screen.blit(xMark, (radioButtonXCoord - 62, radioButtonYCoords[globals["userAnswers"][state["currentQuestion"]]] - 27))
