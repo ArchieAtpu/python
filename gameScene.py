@@ -4,8 +4,8 @@ import math
 import random
 
 # load assets
-spaceshipImg = pygame.transform.scale(pygame.image.load("./assets/demoship.png"),(70,110))
-asteroidImg = pygame.transform.scale(pygame.image.load("./assets/demoAsteroid.jpg"),(150,150))
+spaceshipImg = pygame.transform.scale(pygame.image.load("./assets/spaceship.png.png"),(70,110))
+asteroidImg = pygame.transform.scale(pygame.image.load("./assets/asteroid.png.png"),(150,150))
 
 # define constants
 ACCELERATION = 0.3
