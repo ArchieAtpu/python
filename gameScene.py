@@ -4,12 +4,12 @@ import math
 import random
 
 # load assets
-spaceshipImg = pygame.transform.scale(pygame.image.load("./assets/spaceship.png.png"),(70,110))
-asteroidImg = pygame.transform.scale(pygame.image.load("./assets/asteroid.png.png"),(150,150))
+spaceshipImg = pygame.transform.scale(pygame.image.load("./assets/spaceship.png"),(220,145))
+asteroidImg = pygame.transform.scale(pygame.image.load("./assets/asteroids.png"),(190,150))
 
 # define constants
-ACCELERATION = 0.3
-MAX_SPEED = 5
+ACCELERATION = 1
+MAX_SPEED = 3
 FRICTION = 0.99
 
 ASTEROID_SPAWN_SLOWEST = 3 * 60
