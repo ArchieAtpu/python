@@ -24,55 +24,55 @@ questions = [
         "Neptune and Uranus",
         "Jupiter and Saturn",
         "Mercury, Venus, Earth, and Mars"
-    ], "correctAnswer": 0, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 0, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which is the hottest planet in the \nSolar System?", "answers": [
         "Ceres",
         "Mercury",
         "Mars",
         "Venus"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which planet is unusual because of its \nelongated shape?", "answers": [
         "Earth",
         "Makemake",
         "Uranus",
         "Haumea"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which planet has soil containing \niron oxide (rust)?", "answers": [
         "Venus",
         "Mercury",
         "Makemake",
         "Mars"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Jupiter's 4 largest moons are:", "answers": [
         "Haumea, Makemake, Eris, and Ceres",
         "Io, Europa, Ganymede, and Callisto",
         "The Ganymede moons",
         "Jupiter only has 3 moons."
-    ], "correctAnswer": 1, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 1, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which planet is known for rotating \non its side?", "answers": [
         "Neptune",
         "Uranus",
         "Makemake",
         "Saturn"
-    ], "correctAnswer": 1, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 1, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which is the least densest planet in the \nsolar system?", "answers": [
         "Saturn",
         "Jupiter",
         "Neptune",
         "Uranus"
-    ], "correctAnswer": 0, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 0, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which planet is mostly covered by \nliquid water?", "answers": [
         "Neptune",
         "Ganymede",
         "Earth",
         "Europa"
-    ], "correctAnswer": 2, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 2, "image": pygame.image.load("./assets/titleBackground.png") },
     { "question": "Which is the farthest full-fledged planet \nfrom the sun?", "answers": [
         "Uranus",
         "Pluto",
         "Neptune",
         "Mercury"
-    ], "correctAnswer": 2, "image": pygame.image.load("./assets/demoAsteroid.jpg") },
+    ], "correctAnswer": 2, "image": pygame.image.load("./assets/titleBackground.png") },
 ]
 
 # Scale images so that their height is 260 while preserving aspect ratio

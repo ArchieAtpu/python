@@ -3,7 +3,7 @@ import pygame
 mousePos = pygame.mouse.get_pos()
 
 
-def lessonSceneManager (events, screen, state, globals):  
+def lessonScene (events, screen, state, globals):  
   if mousePos[0] > 742 and mousePos[0] < 330 and mousePos[1] < 330 and mousePos[1] > 308:
     return "Sun"
   if mousePos[0] > 742 and mousePos[0] < 327 and mousePos[1] < 330 and mousePos[1] > 358:

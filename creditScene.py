@@ -2,7 +2,7 @@ import pygame
 
 background = pygame.image.load('./assets/creditBackground.png')
 
-def creditsScene(events, screen, state, globals):
+def creditScene(events, screen, state, globals):
     for event in events:
         if event.type == pygame.QUIT:
             return False

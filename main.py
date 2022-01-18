@@ -10,6 +10,17 @@ from testMatchingScene import testMatchingScene
 from testSubmissionScene import testSubmissionScene
 from resultsScene import resultsScene
 from testUncompletedScene import testUncompletedScene
+from creditScene import creditScene
+
+from lessonScene import lessonScene
+from lessonSun import lessonSun
+from lessonInnerOuterPlanets import lessonInnerOuterPlanets
+from lessonMercuryVenus import lessonMercuryVenus
+from lessonEarthMars import lessonEarthMars
+from lessonJupiterSaturn import lessonJupiterSaturn
+from lessonUranusNeptune import lessonUranusNeptune
+from lessonDwarf import lessonDwarf
+from lessonDwarf2 import lessonDwarf2
 
 # This code is necessary for python to work on tdsb computers
 import platform
@@ -27,5 +38,16 @@ startGame({
     "testMatching": testMatchingScene,
     "testSubmission": testSubmissionScene,
     "results": resultsScene,
-    "testUncompleted": testUncompletedScene
+    "testUncompleted": testUncompletedScene,
+
+    "lesson": lessonScene,
+    "credits": creditScene, 
+    "Sun": lessonSun, 
+    "Inner/Outer Planets": lessonInnerOuterPlanets,
+    "Mercury/Venus": lessonMercuryVenus, 
+    "Earth/Mars": lessonEarthMars, 
+    "Jupiter/Saturn": lessonJupiterSaturn, 
+    "Uranus/Neptune": lessonUranusNeptune, 
+    "Dwarf Planets": lessonDwarf, 
+    "Dwarf Planets2": lessonDwarf2
 }, "title", (1024, 768))
