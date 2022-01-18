@@ -16,11 +16,8 @@ RED = (224, 49, 49)
 correctAnswers = [1,3,2,0]
 
 def testMatchingScene(events, screen, state, globals):
-    globals["showTestAnswers"] = True
-    globals["userMatchingAnswers"] = [2,1,3,0]
-
-    if not "userMatchingAnswers" in globals:
-        globals["userMatchingAnswers"] = [ None, None, None, None ]
+    #globals["showTestAnswers"] = True
+    #globals["userMatchingAnswers"] = [2,1,3,0]
 
     if not state:
         state["selectedChoice"] = None
@@ -77,7 +74,7 @@ def testMatchingScene(events, screen, state, globals):
             # next button
             elif mousePos[0] > 595 and mousePos[0] < 825 and mousePos[1] > 640 and mousePos[1] < 725:
                 if globals["showTestAnswers"]:
-                    pass
+                    return "results"
                 else:
                     return "testSubmission"
 

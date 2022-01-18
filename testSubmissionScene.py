@@ -13,7 +13,7 @@ def testSubmissionScene(events, screen, state, globals):
             if mousePos[0] > 125 and mousePos[0] < 440 and mousePos[1] > 590 and mousePos[1] < 700:
                 return "testMatching"
             elif mousePos[0] > 600 and mousePos[0] < 915 and mousePos[1] > 590 and mousePos[1] < 700:
-                return "menu"
+                return "results"
 
     screen.blit(background, (0,0))
 

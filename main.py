@@ -4,12 +4,12 @@ from startGame import startGame
 from titleScene import titleScene
 from menuScene import menuScene
 from gameScene import gameScene
-from creditScene import creditScene
 from testStartScene import testStartScene
-from lessonScene import lessonScene
 from testMultChoiceScene import testMultChoiceScene
 from testMatchingScene import testMatchingScene
 from testSubmissionScene import testSubmissionScene
+from resultsScene import resultsScene
+from testUncompletedScene import testUncompletedScene
 
 # This code is necessary for python to work on tdsb computers
 import platform
@@ -26,6 +26,6 @@ startGame({
     "testMultChoice": testMultChoiceScene,
     "testMatching": testMatchingScene,
     "testSubmission": testSubmissionScene,
-    "lesson": lessonScene,
-    "credits": creditScene
+    "results": resultsScene,
+    "testUncompleted": testUncompletedScene
 }, "title", (1024, 768))

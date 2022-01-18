@@ -23,7 +23,11 @@ def menuScene(events, screen, state, globals):
                 return "game"
             elif mousePos[0] > 385 and mousePos[0] < 645 and mousePos[1] > 525 and mousePos[1] < 615:
                 return "testStart"
-
+            elif mousePos[0] > 720 and mousePos[0] < 975 and mousePos[1] > 575 and mousePos[1] < 665:
+                if "userAnswers" in globals:
+                    return "results"
+                else:
+                    return "testUncompleted"
 
             # the other buttons do not work yet
 
@@ -40,7 +44,7 @@ def updateBackground(screen, state):
     if state["backgroundFrame"] < 70:
         state["framesToNewBackground"] -= 1
         if state["framesToNewBackground"] == 0:
-            state["framesToNewBackground"] = 4
+            state["framesToNewBackground"] = 3
 
             state["backgroundFrame"] += 1
     

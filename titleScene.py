@@ -8,6 +8,7 @@ def titleScene(events, screen, state, globals):
             return False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mousePos = pygame.mouse.get_pos()
+            print(mousePos)
 
             if mousePos[0] > 231 and mousePos[0] < 425 and mousePos[1] > 676 and mousePos[1] < 741:
                 return False
