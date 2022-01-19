@@ -52,4 +52,4 @@ startGame({
     "Uranus/Neptune": lessonUranusNeptune, 
     "Dwarf Planets": lessonDwarf, 
     "Dwarf Planets2": lessonDwarf2
-}, "game", (1024, 768))
+}, "testStart", (1024, 768))

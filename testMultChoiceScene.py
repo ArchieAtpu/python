@@ -18,76 +18,83 @@ questions = [
         "Between Earth and Mars",
         "The Asteroid Belt",
         "The Oort Cloud"
-    ], "correctAnswer": 2, "image": pygame.image.load("./assets/titleBackground.png") },
+    ], "correctAnswer": 2 },
     { "question": "The Jovian planets are:", "answers": [
         "Uranus, Saturn, Neptune, and Jupiter",
         "Neptune and Uranus",
         "Jupiter and Saturn",
         "Mercury, Venus, Earth, and Mars"
-    ], "correctAnswer": 0, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which is the hottest planet in the \nSolar System?", "answers": [
+    ], "correctAnswer": 0 },
+    { "question": "Which is the hottest planet \nin the Solar System?", "answers": [
         "Ceres",
         "Mercury",
         "Mars",
         "Venus"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which planet is unusual because of its \nelongated shape?", "answers": [
+    ], "correctAnswer": 3 },
+    { "question": "Which planet is unusual because \nof its elongated shape?", "answers": [
         "Earth",
         "Makemake",
         "Uranus",
         "Haumea"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which planet has soil containing \niron oxide (rust)?", "answers": [
+    ], "correctAnswer": 3 },
+    { "question": "Which planet has soil \ncontaining iron oxide (rust)?", "answers": [
         "Venus",
         "Mercury",
         "Makemake",
         "Mars"
-    ], "correctAnswer": 3, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Jupiter's 4 largest moons are:", "answers": [
+    ], "correctAnswer": 3 },
+    { "question": "Jupiter's 4 largest \nmoons are:", "answers": [
         "Haumea, Makemake, Eris, and Ceres",
         "Io, Europa, Ganymede, and Callisto",
         "The Ganymede moons",
         "Jupiter only has 3 moons."
-    ], "correctAnswer": 1, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which planet is known for rotating \non its side?", "answers": [
+    ], "correctAnswer": 1 },
+    { "question": "What is the sun \nmostly made of?", "answers": [
+        "Hydrogen and helium",
+        "Oxygen",
+        "Helium",
+        "Hydrogen, helium, and oxygen"
+    ], "correctAnswer": 0 },
+    { "question": "Which planet is known for \nrotating on its side?", "answers": [
         "Neptune",
         "Uranus",
         "Makemake",
         "Saturn"
-    ], "correctAnswer": 1, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which is the least densest planet in the \nsolar system?", "answers": [
+    ], "correctAnswer": 1 },
+    { "question": "Which is the least densest \nplanet in the solar system?", "answers": [
         "Saturn",
         "Jupiter",
         "Neptune",
         "Uranus"
-    ], "correctAnswer": 0, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which planet is mostly covered by \nliquid water?", "answers": [
+    ], "correctAnswer": 0 },
+    { "question": "Which planet is mostly covered \nby liquid water?", "answers": [
         "Neptune",
         "Ganymede",
         "Earth",
         "Europa"
-    ], "correctAnswer": 2, "image": pygame.image.load("./assets/titleBackground.png") },
-    { "question": "Which is the farthest full-fledged planet \nfrom the sun?", "answers": [
+    ], "correctAnswer": 2 },
+    { "question": "Which is the farthest \nfull-fledged planet from the sun?", "answers": [
         "Uranus",
         "Pluto",
         "Neptune",
         "Mercury"
-    ], "correctAnswer": 2, "image": pygame.image.load("./assets/titleBackground.png") },
+    ], "correctAnswer": 2 },
+    { "question": "Where does the Sun \nproduce its energy?", "answers": [
+        "The Photosphere",
+        "The Core",
+        "The Sun doesn't produce energy.",
+        "The Chromosphere"
+    ], "correctAnswer": 1 },
 ]
 
-# Scale images so that their height is 260 while preserving aspect ratio
-for question in questions:
-    newWidth = round(260/question["image"].get_height()*question["image"].get_width())
-    question["image"] = pygame.transform.scale(question["image"], (newWidth, 260))
-
 radioButtonSize = 20
-radioButtonXCoord = 115
-radioButtonYCoords = [ 410, 470, 530, 590 ]
+radioButtonXCoord = 70
+radioButtonYCoords = [ 310, 380, 450, 520 ]
 
 def testMultChoiceScene(events, screen, state, globals):
     # initialize variables if they don't exist
     if not ("userAnswers" in globals and globals["userAnswers"]):
-        globals["userAnswers"] = [ 0 for i in range(len(questions)) ]
+        globals["userAnswers"] = [ None for i in range(len(questions)) ]
     if not state:
         state["currentQuestion"] = 0
 
@@ -131,7 +138,6 @@ def testMultChoiceScene(events, screen, state, globals):
 
     renderText(screen, state)
     drawButtons(screen, state, globals)
-    drawImg(screen, state)
     
     if globals["showTestAnswers"]:
         showAnswers(screen, state, globals)
@@ -141,15 +147,15 @@ def renderText(screen, state):
 
     if "\n" in currentQuestion:
         splitQuestion = currentQuestion.splitlines()
-        bangersFont.render_to(screen, (60, 17), splitQuestion[0], WHITE, size=58)
-        bangersFont.render_to(screen, (60, 65), splitQuestion[1], WHITE, size=58)
+        bangersFont.render_to(screen, (50, 136), splitQuestion[0], WHITE, size=58)
+        bangersFont.render_to(screen, (50, 184), splitQuestion[1], WHITE, size=58)
     else:
-        bangersFont.render_to(screen, (60, 20), questions[state["currentQuestion"]]["question"], WHITE, size=66)
+        bangersFont.render_to(screen, (50, 136), questions[state["currentQuestion"]]["question"], WHITE, size=66)
 
-    bangersFont.render_to(screen, (150, 390), questions[state["currentQuestion"]]["answers"][0], PURPLE, size=52)
-    bangersFont.render_to(screen, (150, 450), questions[state["currentQuestion"]]["answers"][1], CYAN, size=52)
-    bangersFont.render_to(screen, (150, 510), questions[state["currentQuestion"]]["answers"][2], PURPLE, size=52)
-    bangersFont.render_to(screen, (150, 570), questions[state["currentQuestion"]]["answers"][3], CYAN, size=52)
+    bangersFont.render_to(screen, (105, 290), questions[state["currentQuestion"]]["answers"][0], PURPLE, size=52)
+    bangersFont.render_to(screen, (105, 360), questions[state["currentQuestion"]]["answers"][1], CYAN, size=52)
+    bangersFont.render_to(screen, (105, 430), questions[state["currentQuestion"]]["answers"][2], PURPLE, size=52)
+    bangersFont.render_to(screen, (105, 500), questions[state["currentQuestion"]]["answers"][3], CYAN, size=52)
 
 def radioButton(screen, radius, pos, selected, unselectedColor, selectedColor):
     pygame.draw.circle(screen, selectedColor if selected else unselectedColor, pos, radius, radius//7)
@@ -162,12 +168,8 @@ def drawButtons(screen, state, globals):
         radioButton(screen, radioButtonSize, (radioButtonXCoord, radioButtonYCoords[i]), 
             globals["userAnswers"][state["currentQuestion"]] == i, (190,190,190), (255,255,255))
 
-def drawImg(screen, state):
-    questionImg = questions[state["currentQuestion"]]["image"]
-    position = (512 - questionImg.get_width()/2, 240 - 125) # center image around (512,240)
-    screen.blit(questionImg, position)
-
 def showAnswers(screen, state, globals):
     screen.blit(checkMark, (radioButtonXCoord - 70, radioButtonYCoords[questions[state["currentQuestion"]]["correctAnswer"]] - 25))
-    if globals["userAnswers"][state["currentQuestion"]] != questions[state["currentQuestion"]]["correctAnswer"]:
+    if globals["userAnswers"][state["currentQuestion"]] != questions[state["currentQuestion"]]["correctAnswer"] \
+        and globals["userAnswers"][state["currentQuestion"]] != None:
         screen.blit(xMark, (radioButtonXCoord - 62, radioButtonYCoords[globals["userAnswers"][state["currentQuestion"]]] - 27))

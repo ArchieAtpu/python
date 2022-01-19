@@ -6,7 +6,7 @@ CYAN = (80, 165, 187)
 backgroundImg = pygame.image.load("./assets/resultsBackground.png")
 bangersFont = pygame.freetype.Font("./assets/Bangers-Regular.ttf")
 
-correctAnswers = [ 2, 0, 3, 3, 3, 1, 1, 0, 2, 2 ]
+correctAnswers = [ 2, 0, 3, 3, 3, 1, 0, 1, 0, 2, 2, 1 ]
 correctMatches = [ 1, 3, 2, 0 ]
 
 def resultsScene(events, screen, state, globals):
