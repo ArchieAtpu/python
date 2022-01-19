@@ -10,6 +10,7 @@ from testMatchingScene import testMatchingScene
 from testSubmissionScene import testSubmissionScene
 from resultsScene import resultsScene
 from testUncompletedScene import testUncompletedScene
+from testNotUnlockedScene import testNotUnlockedScene
 from creditScene import creditScene
 
 from lessonScene import lessonScene
@@ -39,6 +40,7 @@ startGame({
     "testSubmission": testSubmissionScene,
     "results": resultsScene,
     "testUncompleted": testUncompletedScene,
+    "testNotUnlocked": testNotUnlockedScene,
 
     "lesson": lessonScene,
     "credits": creditScene, 
@@ -50,4 +52,4 @@ startGame({
     "Uranus/Neptune": lessonUranusNeptune, 
     "Dwarf Planets": lessonDwarf, 
     "Dwarf Planets2": lessonDwarf2
-}, "title", (1024, 768))
+}, "game", (1024, 768))

@@ -22,7 +22,10 @@ def menuScene(events, screen, state, globals):
             elif mousePos[0] > 135 and mousePos[0] < 455 and mousePos[1] > 385 and mousePos[1] < 495:
                 return "game"
             elif mousePos[0] > 385 and mousePos[0] < 645 and mousePos[1] > 525 and mousePos[1] < 615:
-                return "testStart"
+                if "lessonCompleted" in globals and "gameCompleted" in globals:
+                    return "testStart"
+                else:
+                    return "testNotUnlocked"
             elif mousePos[0] > 720 and mousePos[0] < 975 and mousePos[1] > 575 and mousePos[1] < 665:
                 if "userAnswers" in globals:
                     return "results"
