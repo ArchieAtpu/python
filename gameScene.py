@@ -1,5 +1,6 @@
 # import modules
 import pygame
+import pygame.freetype
 import math
 import random
 
@@ -9,6 +10,9 @@ asteroidImg = pygame.transform.scale(pygame.image.load("./assets/asteroids.png")
 backgroundImg = pygame.image.load("./assets/gameBackground.png")
 
 explosionImgs = [ pygame.transform.scale(pygame.image.load(f"./assets/explosion/{i}.png"),(190,150)) for i in range(7) ]
+
+pygame.freetype.init()
+bangersFont = pygame.freetype.Font("./assets/Bangers-Regular.ttf")
 
 # define constants
 ACCELERATION = 1
@@ -60,10 +64,12 @@ PLANET_SIZES = { "mercury": 63, "venus": 77, "earth": 89, "mars": 75, "jupiter":
 # main scene subprogram
 def gameScene(events, screen, state, globals):
     if not state: # initialize the state if it is empty
-        initializeState(state)
+        initializeState(state, globals)
 
-    if handleEvents(events, state) == False:
-        return False # exits the program
+    handleEventsResult = handleEvents(events, state, globals)
+    
+    if handleEventsResult != None:
+        return handleEventsResult
 
     if not state["paused"]:
         updateSpaceship(screen, state)
@@ -78,18 +84,24 @@ def gameScene(events, screen, state, globals):
     draw(screen, state)
 
 # subprograms used in the scene
-def initializeState(state):
+def initializeState(state, globalVars):
     state["controls"] = { "up": False, "left": False, "down": False, "right": False }
     state["spaceship"] = { "pos": [500,400], "vel": [0,0], "angle": 0, "rotationVel": 0, "exploding": None, "framesUntilNext": 3 }
     state["timeUntilAsteroid"] = 1 * 60
     state["asteroids"] = []
-    state["missingPlanets"] = PLANETS.copy()
+
+    if not "missingPlanets" in globalVars:
+        state["missingPlanets"] = PLANETS.copy()
+    else:
+        state["missingPlanets"] = globalVars["missingPlanets"]
+
     state["blasterBolts"] = []
     state["shootCooldown"] = 0
     state["paused"] = False
     state["planetCard"] = None
+    state["score"] = 0
 
-def handleEvents(events, state):
+def handleEvents(events, state, globalVars):
     state["shootCooldown"] -= 1
 
     for event in events:
@@ -145,9 +157,15 @@ def handleEvents(events, state):
                     if mousePos[0] > 615 and mousePos[0] < 635 and mousePos[1] > 235 and mousePos[1] < 260:
                         state["planetCard"] = None
                         state["paused"] = False
+
+                        if len(state["missingPlanets"]) == 0:
+                            return "win"
                 else:
                     if mousePos[0] > 354 and mousePos[0] < 670 and mousePos[1] > 430 and mousePos[1] < 540:
                         state["paused"] = False
+                    elif mousePos[0] > 355 and mousePos[0] < 670 and mousePos[1] > 580 and mousePos[1] < 690:
+                        globalVars["missingPlanets"] = state["missingPlanets"]
+                        return "menu"
                     
 def updateSpaceship(screen, state):
     if state["spaceship"]["exploding"] != None:
@@ -155,6 +173,7 @@ def updateSpaceship(screen, state):
             state["spaceship"] = { "pos": [500,400], "vel": [0,0], "angle": 0, "rotationVel": 0, "exploding": None, "framesUntilNext": 3 }
             state["asteroids"] = []
             state["blasterBolts"] = []
+            state["score"] = 0
             return
 
         state["spaceship"]["framesUntilNext"] -= 1
@@ -252,13 +271,13 @@ def handleAsteroidSpawning(state):
             spawnPos, asteroidVel = generateAsteroidSpawn()
 
             # if the spawn position is too close to the player, try again; otherwise, break from the loop
-            if pygame.math.Vector2(spawnPos[0], -spawnPos[1]).distance_to((state["spaceship"]["pos"][0], -state["spaceship"]["pos"][1])) > 300:
+            if pygame.math.Vector2(spawnPos[0], -spawnPos[1]).distance_to((state["spaceship"]["pos"][0], -state["spaceship"]["pos"][1])) > 400:
                 break
 
         planet = None
 
         if state["missingPlanets"] and random.random() < 0.2:
-            for i in range(2):
+            for i in range(3):
                 planetChoice = random.choice(PLANETS)
 
                 if planetChoice in state["missingPlanets"]:
@@ -340,6 +359,7 @@ def updateAsteroid(screen, asteroidState, state):
         if circleCircleCollision(bolt["pos"], 5, center, size):
             print("boom")
             asteroidState["exploding"] = 0
+            state['score'] += 3 if asteroidState["planet"] else 1
             state["blasterBolts"].remove(bolt) # deletes the blaster bolt
 
 def getAsteroidHitbox(asteroidState):
@@ -406,3 +426,6 @@ def draw(screen, state):
             screen.blit(planetCardImgs[state["planetCard"]], (230,140))
         else:
             screen.blit(pauseMenuImg, (0,0))
+
+    bangersFont.render_to(screen, (0, 730), f"Missing Planets: {len(state['missingPlanets'])}", (255,255,255), size=48)
+    bangersFont.render_to(screen, (500, 25), str(state['score']), (255,255,255), size=48)

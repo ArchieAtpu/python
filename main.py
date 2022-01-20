@@ -12,6 +12,7 @@ from resultsScene import resultsScene
 from testUncompletedScene import testUncompletedScene
 from testNotUnlockedScene import testNotUnlockedScene
 from creditScene import creditScene
+from winScene import winScene
 
 from lessonScene import lessonScene
 from lessonSun import lessonSun
@@ -41,6 +42,7 @@ startGame({
     "results": resultsScene,
     "testUncompleted": testUncompletedScene,
     "testNotUnlocked": testNotUnlockedScene,
+    "win": winScene,
 
     "lesson": lessonScene,
     "credits": creditScene, 
@@ -52,4 +54,4 @@ startGame({
     "Uranus/Neptune": lessonUranusNeptune, 
     "Dwarf Planets": lessonDwarf, 
     "Dwarf Planets2": lessonDwarf2
-}, "game", (1024, 768))
+}, "title", (1024, 768))
