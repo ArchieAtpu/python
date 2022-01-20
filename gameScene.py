@@ -6,13 +6,16 @@ import random
 # load assets
 spaceshipImg = pygame.transform.scale(pygame.image.load("./assets/spaceship.png"),(68,149))
 asteroidImg = pygame.transform.scale(pygame.image.load("./assets/asteroids.png"),(190,150))
+backgroundImg = pygame.image.load("./assets/gameBackground.png")
+
+explosionImgs = [ pygame.transform.scale(pygame.image.load(f"./assets/explosion/{i}.png"),(190,150)) for i in range(7) ]
 
 # define constants
 ACCELERATION = 1
-MAX_SPEED = 3
+MAX_SPEED = 3.3
 FRICTION = 0.99
 
-ROTATION_ACCEL = 0.3
+ROTATION_ACCEL = 0.32
 ROTATION_FRICTION = 0.965
 MAX_ROTATION_SPEED = 3.5
 
@@ -23,20 +26,36 @@ ASTEROID_MIN_SPEED = 0.5
 
 PLANETS = [ "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune"]
 planetImgs = {
-    "mercury": pygame.image.load("./assets/spaceship.png"), 
-    "venus": pygame.image.load("./assets/spaceship.png"), 
-    "earth": pygame.image.load("./assets/spaceship.png"), 
-    "mars": pygame.image.load("./assets/spaceship.png"), 
-    "jupiter": pygame.image.load("./assets/spaceship.png"), 
-    "saturn": pygame.image.load("./assets/spaceship.png"), 
-    "uranus": pygame.image.load("./assets/spaceship.png"), 
-    "neptune": pygame.image.load("./assets/spaceship.png")
+    "mercury": pygame.image.load("./assets/planets/mercury.png"), 
+    "venus": pygame.image.load("./assets/planets/venus.png"), 
+    "earth": pygame.image.load("./assets/planets/earth.png"), 
+    "mars": pygame.image.load("./assets/planets/mars.png"), 
+    "jupiter": pygame.image.load("./assets/planets/jupiter.png"), 
+    "saturn": pygame.image.load("./assets/planets/saturn.png"), 
+    "uranus": pygame.image.load("./assets/planets/uranus.png"), 
+    "neptune": pygame.image.load("./assets/planets/neptune.png")
 }
+
+planetCardImgs = {
+    "mercury": pygame.image.load("./assets/planetCards/mercury.png"), 
+    "venus": pygame.image.load("./assets/planetCards/venus.png"), 
+    "earth": pygame.image.load("./assets/planetCards/earth.png"), 
+    "mars": pygame.image.load("./assets/planetCards/mars.png"), 
+    "jupiter": pygame.image.load("./assets/planetCards/jupiter.png"), 
+    "saturn": pygame.image.load("./assets/planetCards/saturn.png"), 
+    "uranus": pygame.image.load("./assets/planetCards/uranus.png"), 
+    "neptune": pygame.image.load("./assets/planetCards/neptune.png")
+}
+
+pauseMenuImg = pygame.transform.scale(pygame.image.load("./assets/pauseMenu.png"), (1024, 768))
 
 SPACESHIP_HITBOXES = ( ((0, -15), 20), ((0, -40), 5), ((0, -55), 5), ((0, 15), 25), ((25, 25), 8), ((-25, 25), 8) )
 
 BLASTER_BOLT_SPEED = 15
 SHOOT_COOLDOWN = 0.7 * 60
+
+ASTEROID_HITBOX = ((94, 76), 56)
+PLANET_SIZES = { "mercury": 63, "venus": 77, "earth": 89, "mars": 75, "jupiter": 130, "saturn": 112, "uranus": 95, "neptune": 97 }
 
 # main scene subprogram
 def gameScene(events, screen, state, globals):
@@ -46,24 +65,29 @@ def gameScene(events, screen, state, globals):
     if handleEvents(events, state) == False:
         return False # exits the program
 
-    updateSpaceship(screen, state)
-    handleAsteroidSpawning(state)
-    
-    for asteroidState in state["asteroids"]: # update all asteroids
-        updateAsteroid(screen, asteroidState, state)
+    if not state["paused"]:
+        updateSpaceship(screen, state)
+        handleAsteroidSpawning(state)
+        
+        for asteroidState in state["asteroids"]: # update all asteroids
+            updateAsteroid(screen, asteroidState, state)
 
-    for boltState in state["blasterBolts"]: # update all blaster bolts
-        updateBlasterBolt(screen, boltState, state)
+        for boltState in state["blasterBolts"]: # update all blaster bolts
+            updateBlasterBolt(screen, boltState, state)
+
+    draw(screen, state)
 
 # subprograms used in the scene
 def initializeState(state):
     state["controls"] = { "up": False, "left": False, "down": False, "right": False }
-    state["spaceship"] = { "pos": [500,400], "vel": [0,0], "angle": 0, "rotationVel": 0 }
+    state["spaceship"] = { "pos": [500,400], "vel": [0,0], "angle": 0, "rotationVel": 0, "exploding": None, "framesUntilNext": 3 }
     state["timeUntilAsteroid"] = 1 * 60
     state["asteroids"] = []
-    state["missingPlanets"] = PLANETS
+    state["missingPlanets"] = PLANETS.copy()
     state["blasterBolts"] = []
     state["shootCooldown"] = 0
+    state["paused"] = False
+    state["planetCard"] = None
 
 def handleEvents(events, state):
     state["shootCooldown"] -= 1
@@ -73,15 +97,15 @@ def handleEvents(events, state):
             return False # exits the program
 
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
                 state["controls"]["up"] = True
-            elif event.key == pygame.K_a:
+            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                 state["controls"]["left"] = True
-            elif event.key == pygame.K_s:
+            elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 state["controls"]["down"] = True
-            elif event.key == pygame.K_d:
+            elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 state["controls"]["right"] = True
-            elif event.key == pygame.K_SPACE and state["shootCooldown"] < 1:
+            elif event.key == pygame.K_SPACE and state["shootCooldown"] < 1 and not state["paused"]:
                 angleInRadians = math.radians(state["spaceship"]["angle"] + 90)
                 cosAngle = math.cos(angleInRadians)
                 sinAngle = math.sin(angleInRadians)
@@ -95,18 +119,52 @@ def handleEvents(events, state):
                 ) })
 
                 state["shootCooldown"] = SHOOT_COOLDOWN
+            elif event.key == pygame.K_ESCAPE:
+                if state["paused"]:
+                    state["paused"] = False
+                    state["planetCard"] = None
+                else:
+                    state["paused"] = True
 
         elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
                 state["controls"]["up"] = False
-            elif event.key == pygame.K_a:
+            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                 state["controls"]["left"] = False
-            elif event.key == pygame.K_s:
+            elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 state["controls"]["down"] = False
-            elif event.key == pygame.K_d:
+            elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 state["controls"]["right"] = False
+    
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mousePos = pygame.mouse.get_pos()
+            print(mousePos)
 
+            if state["paused"]:
+                if state["planetCard"]:
+                    if mousePos[0] > 615 and mousePos[0] < 635 and mousePos[1] > 235 and mousePos[1] < 260:
+                        state["planetCard"] = None
+                        state["paused"] = False
+                else:
+                    if mousePos[0] > 354 and mousePos[0] < 670 and mousePos[1] > 430 and mousePos[1] < 540:
+                        state["paused"] = False
+                    
 def updateSpaceship(screen, state):
+    if state["spaceship"]["exploding"] != None:
+        if state["spaceship"]["exploding"] > 20:
+            state["spaceship"] = { "pos": [500,400], "vel": [0,0], "angle": 0, "rotationVel": 0, "exploding": None, "framesUntilNext": 3 }
+            state["asteroids"] = []
+            state["blasterBolts"] = []
+            return
+
+        state["spaceship"]["framesUntilNext"] -= 1
+
+        if state["spaceship"]["framesUntilNext"] < 1:
+            state["spaceship"]["framesUntilNext"] = 3
+            state["spaceship"]["exploding"] += 1
+
+        return
+
     # increase velocity according to user input
     if state["controls"]["up"]:
         state["spaceship"]["vel"][0] += ACCELERATION * math.cos(math.radians(state["spaceship"]["angle"] + 90))
@@ -142,14 +200,16 @@ def updateSpaceship(screen, state):
     state["spaceship"]["pos"][0] += state["spaceship"]["vel"][0]
     state["spaceship"]["pos"][1] += state["spaceship"]["vel"][1]
     state["spaceship"]["angle"] += state["spaceship"]["rotationVel"]
-   
-    shipCenter = spaceshipImg.get_rect(topleft=state["spaceship"]["pos"]).center
-    rotatedImg = pygame.transform.rotate(spaceshipImg,state["spaceship"]["angle"])
-    
-    newPos = (state["spaceship"]["pos"][0] - rotatedImg.get_width()/2, state["spaceship"]["pos"][1] - rotatedImg.get_height()/2)
-    #pygame.draw.circle(screen,(255,255,255),shipCenter,300)
-    # draw the spaceship
-    screen.blit(rotatedImg, newPos)
+
+    if state["spaceship"]["pos"][0] < -70:
+        state["spaceship"]["pos"][0] = 1094
+    elif state["spaceship"]["pos"][0] > 1094:
+        state["spaceship"]["pos"][0] = -70
+
+    if state["spaceship"]["pos"][1] < -70:
+        state["spaceship"]["pos"][1] = 838
+    elif state["spaceship"]["pos"][1] > 838:
+        state["spaceship"]["pos"][1] = -70
 
     for offset, size in SPACESHIP_HITBOXES:
         translatedPos = (state["spaceship"]["pos"][0] + offset[0], state["spaceship"]["pos"][1] + offset[1])
@@ -157,10 +217,14 @@ def updateSpaceship(screen, state):
         #pygame.draw.circle(screen, (255,0,0), rotatedPos, size)
 
         for asteroid in state["asteroids"]:
-            center = (asteroid["pos"][0] + 94, asteroid["pos"][1] + 76)
+            if asteroid["exploding"]:
+                continue
 
-            if circleCircleCollision(rotatedPos, size, center, 56):
+            center, asteroidSize = getAsteroidHitbox(asteroid)
+
+            if circleCircleCollision(rotatedPos, size, center, asteroidSize):
                 print("hit")
+                state["spaceship"]["exploding"] = 0
 
 def rotatePointAroundPivot(point, pivot, angle):
     """Takes an angle in degrees. I figured out the maths for this myself!!!!"""
@@ -194,7 +258,7 @@ def handleAsteroidSpawning(state):
         planet = None
 
         if state["missingPlanets"] and random.random() < 0.2:
-            for i in range(3):
+            for i in range(2):
                 planetChoice = random.choice(PLANETS)
 
                 if planetChoice in state["missingPlanets"]:
@@ -202,29 +266,30 @@ def handleAsteroidSpawning(state):
                     print(planet)
                     break
 
-        state["asteroids"].append({ "pos": spawnPos, "vel": asteroidVel, "planet": planet }) # adds a new asteroid
+        state["asteroids"].append({ "pos": spawnPos, "vel": asteroidVel, "planet": planet, 
+            "exploding": None, "framesUntilNext": 3 }) # adds a new asteroid
 
 def generateAsteroidSpawn():
     """Asteroids are spawned on one of the four edges of the screen."""
 
-    spawnLen = random.randint(0,800) # the distance along the edge that the asteroid will be spawned    
+    spawnLen = random.randint(68,700) # the distance along the edge that the asteroid will be spawned    
     asteroidVel = [random.uniform(ASTEROID_MIN_SPEED,ASTEROID_MAX_SPEED),random.uniform(ASTEROID_MIN_SPEED,ASTEROID_MAX_SPEED)]
 
     if random.random() > 0.5: # spawns asteroid on the top or bottom edge
         if random.random() > 0.5: # spawns asteroid on the bottom edge
-            spawnPos = [spawnLen, 830]
+            spawnPos = [spawnLen, 868]
             asteroidVel[1] *= -1
         else: # spawns asteroid on the top edge
-            spawnPos = [spawnLen, -30]
+            spawnPos = [spawnLen, -150]
 
         if random.random() > 0.5: # makes the asteroid drift to the left instead of to the right
             asteroidVel[0] *= -1
     else: # spawns asteroid on the left or right edge
         if random.random() > 0.5: # spawns asteroid on the right edge
-            spawnPos = [830, spawnLen]
+            spawnPos = [1124, spawnLen]
             asteroidVel[0] *= -1
         else: # spawns asteroid on the left edge
-            spawnPos = [-30, spawnLen]
+            spawnPos = [-150, spawnLen]
 
         if random.random() > 0.5: # makes the asteroid drift to up instead of down
             asteroidVel[1] *= -1
@@ -232,6 +297,30 @@ def generateAsteroidSpawn():
     return spawnPos, asteroidVel
 
 def updateAsteroid(screen, asteroidState, state):
+
+    if asteroidState["exploding"] != None:
+        if asteroidState["exploding"] > 10:
+            if asteroidState["planet"]:
+                try:
+                    state["missingPlanets"].remove(asteroidState["planet"])
+
+                    print("found " + asteroidState["planet"])
+                    state["paused"] = True
+                    state["planetCard"] = asteroidState["planet"]
+                except ValueError:
+                    pass
+
+            state["asteroids"].remove(asteroidState) # deletes the asteroid
+            return
+
+        asteroidState["framesUntilNext"] -= 1
+
+        if asteroidState["framesUntilNext"] < 1:
+            asteroidState["framesUntilNext"] = 3
+            asteroidState["exploding"] += 1
+
+        return
+
     # moves the asteroid according to its velocity
     asteroidState["pos"][0] += asteroidState["vel"][0]
     asteroidState["pos"][1] += asteroidState["vel"][1]
@@ -239,13 +328,30 @@ def updateAsteroid(screen, asteroidState, state):
     if asteroidState["pos"][0] > 2000 or asteroidState["pos"][0] < -1000 or \
         asteroidState["pos"][1] > 2000 or asteroidState["pos"][1] < -1000:
         state["asteroids"].remove(asteroidState) # deletes the asteroid
+        return
+
+
+    #pygame.draw.circle(screen, (255,0,0), (asteroidState["pos"][0] + 94, asteroidState["pos"][1] + 76), 56)
+    center, size = getAsteroidHitbox(asteroidState)
+
+    #pygame.draw.circle(screen, (0,255,0), center, size)
+    for bolt in state["blasterBolts"]:
+
+        if circleCircleCollision(bolt["pos"], 5, center, size):
+            print("boom")
+            asteroidState["exploding"] = 0
+            state["blasterBolts"].remove(bolt) # deletes the blaster bolt
+
+def getAsteroidHitbox(asteroidState):
+    if asteroidState["planet"]:
+        center = (asteroidState["pos"][0] + planetImgs[asteroidState["planet"]].get_width() / 2, 
+            asteroidState["pos"][1] + planetImgs[asteroidState["planet"]].get_height() / 2)
+        size = PLANET_SIZES[asteroidState["planet"]]
     else:
-        #pygame.draw.circle(screen, (255,0,0), (asteroidState["pos"][0] + 94, asteroidState["pos"][1] + 76), 56)
-        # draws the asteroid
-        if asteroidState["planet"]:
-            screen.blit(planetImgs[asteroidState["planet"]], asteroidState["pos"])
-        else:
-            screen.blit(asteroidImg, asteroidState["pos"])
+        center = (asteroidState["pos"][0] + ASTEROID_HITBOX[0][0], asteroidState["pos"][1] + ASTEROID_HITBOX[0][1])
+        size = ASTEROID_HITBOX[1]
+    
+    return center, size
 
 def updateBlasterBolt(screen, boltState, state):
     boltState["pos"][0] += boltState["vel"][0]
@@ -253,8 +359,50 @@ def updateBlasterBolt(screen, boltState, state):
 
     if boltState["pos"][0] > 2000 or boltState["pos"][0] < -1000 or \
         boltState["pos"][1] > 2000 or boltState["pos"][1] < -1000:
-        state["blasterBolts"].remove(boltState) # deletes the asteroid
+        state["blasterBolts"].remove(boltState) # deletes the blaster bolt
+        return
+
+def draw(screen, state):
+    screen.blit(backgroundImg, (0,0))
+
+    # draw the spaceship
+    if state["spaceship"]["exploding"] != None:
+        if state["spaceship"]["exploding"] > 5:
+            frame = explosionImgs[6]
+        else:
+            frame = explosionImgs[state["spaceship"]["exploding"]]
+
+        screen.blit(frame, state["spaceship"]["pos"])
     else:
-        pygame.draw.circle(screen, (255,0,0), boltState["pos"], 5)
-        # draws the blaster bolt
-        #screen.blit(asteroidImg, asteroidState["pos"])
+        rotatedImg = pygame.transform.rotate(spaceshipImg,state["spaceship"]["angle"])
+        newPos = (state["spaceship"]["pos"][0] - rotatedImg.get_width()/2, state["spaceship"]["pos"][1] - rotatedImg.get_height()/2)
+        #pygame.draw.circle(screen,(255,255,255),shipCenter,300)
+        screen.blit(rotatedImg, newPos)
+
+    # draw the asteroids
+    for asteroidState in state["asteroids"]:
+        if asteroidState["exploding"] != None:
+            if asteroidState["exploding"] > 5:
+                frame = explosionImgs[6]
+            else:
+                frame = explosionImgs[asteroidState["exploding"]]
+
+            if asteroidState["planet"]:
+                planetImg = planetImgs[asteroidState["planet"]]
+                frame = pygame.transform.scale(frame, (planetImg.get_width(), planetImg.get_height()))
+
+            screen.blit(frame, asteroidState["pos"])
+        else:
+            if asteroidState["planet"]:
+                screen.blit(planetImgs[asteroidState["planet"]], asteroidState["pos"])
+            else:
+                screen.blit(asteroidImg, asteroidState["pos"])
+
+    for boltState in state["blasterBolts"]:
+        pygame.draw.circle(screen, (255, 0, 0), boltState["pos"], 5) # draws the blaster bolt
+
+    if state["paused"]:
+        if state["planetCard"]:
+            screen.blit(planetCardImgs[state["planetCard"]], (230,140))
+        else:
+            screen.blit(pauseMenuImg, (0,0))
